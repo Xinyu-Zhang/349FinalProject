@@ -140,6 +140,20 @@ def featureImportance(trainData, trainTarget, testData, testTarget):
     plt.xlim([-1, train_data.shape[1]])
 
 
+def errorRate(train_data, train_label, test_data, test_label):
+    n_estimators = np.concatenate(([1], range(10, 500, 10)), axis=0)
+    error = []
+    for n in n_estimators:
+        clf_RF = RandomForestClassifier(n_estimators=n)
+        error.append(1 - accuracy_score(test_label, clf_RF.fit(train_data, train_label).predict(test_data)))
+    plt.figure(6)
+    plt.plot(n_estimators, error)
+    plt.ylim((0.0, 1.0))
+    plt.xlabel('n_estimators')
+    plt.ylabel('error rate')
+    plt.title("Error rate of RF algorithm with different number of estimators")
+
+
 train_data = []
 train_label = []
 
@@ -159,5 +173,6 @@ compareClf(train_data, train_label)
 test_data, test_label = parse("./DATA_processed/2016.csv")
 confusionMatrix(train_data, train_label, test_data, test_label)
 featureImportance(train_data, train_label, test_data, test_label)
+errorRate(train_data, train_label, test_data, test_label)
 plt.show()
 
